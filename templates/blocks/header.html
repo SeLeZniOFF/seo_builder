@@ -1,0 +1,20 @@
+<nav class="navbar navbar-expand-lg" style="background-color: var(--color-main); box-shadow: 0 4px 20px rgba(0,0,0,0.08); padding: 18px 0; z-index: 100;">
+  <div class="container d-flex justify-content-between align-items-center">
+
+    <a href="{% url 'home_page' subdomain=site.subdomain %}" class="premium-text-logo">
+      {{ site.logo_text|default:site.name }}<span class="dot">.</span>
+    </a>
+
+    <div class="d-none d-lg-flex gap-4">
+      {% for p in site.pages.all %}
+          <a class="nav-link fw-semibold"
+             style="color: var(--color-accent); opacity: {% if page.id == p.id %}1{% else %}0.7{% endif %}; transition: 0.2s;"
+             onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='{% if page.id == p.id %}1{% else %}0.7{% endif %}'"
+             href="{% if p.slug %}{% url 'inner_page' subdomain=site.subdomain slug=p.slug %}{% else %}{% url 'home_page' subdomain=site.subdomain %}{% endif %}">
+             {{ p.title }}
+          </a>
+      {% endfor %}
+    </div>
+
+  </div>
+</nav>

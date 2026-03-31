@@ -1,0 +1,251 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="{{ site.language }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>{% if page.meta_title %}{{ page.meta_title }}{% else %}{{ page.title }} | {{ site.name }}{% endif %}</title>
+
+    {% if page.meta_description %}
+    <meta name="description" content="{{ page.meta_description }}">
+    {% endif %}
+
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="{{ site.name }}">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <meta property="og:title" content="{% if page.meta_title %}{{ page.meta_title }}{% else %}{{ page.title }}{% endif %}">
+    {% if page.meta_description %}
+    <meta property="og:description" content="{{ page.meta_description }}">
+    {% endif %}
+    {% if page.og_image %}
+    <meta property="og:image" content="{{ page.og_image }}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="{{ page.og_image }}">
+    {% endif %}
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": "{% if page.meta_title %}{{ page.meta_title }}{% else %}{{ page.title }}{% endif %}",
+      "description": "{{ page.meta_description|escapejs }}",
+      "url": "{{ request.build_absolute_uri }}",
+      "publisher": {
+        "@type": "Organization",
+        "name": "{{ site.name }}",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "{{ page.og_image|default:'' }}"
+        }
+      }
+    }
+    </script>
+
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23{{ site.color_main|slice:"1:" }}'/><text x='50%' y='50%' font-family='Arial' font-size='60' font-weight='bold' fill='%23{{ site.color_accent|slice:"1:" }}' text-anchor='middle' dy='.35em'>{{ site.name|make_list|first|upper }}</text></svg>">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family={{ site.font_family|urlencode }}:wght@400;500;600;800;900&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            /* Базовые цвета */
+            --color-main: {{ site.color_main }};
+            --color-accent: {{ site.color_accent }};
+
+            /* Скругления */
+            --theme-radius: {% if site.rounded_corners %}24px{% else %}0px{% endif %};
+            --theme-radius-sm: {% if site.rounded_corners %}12px{% else %}0px{% endif %};
+
+            /* Glassmorphism Стили */
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: 1px solid rgba(255, 255, 255, 0.08);
+            --glass-blur: blur(12px);
+            --glow-accent: 0 0 20px {{ site.color_accent }}40;
+        }
+
+        body { font-family: var(--theme-font); background-color: var(--color-main); color: #ffffff; padding-bottom: 0; }
+        @media (max-width: 991px) { body { padding-bottom: 80px; } }
+        main { overflow-x: hidden; }
+
+        .glass-card {
+            background: var(--glass-bg);
+            border: var(--glass-border);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border-radius: var(--theme-radius);
+            transition: 0.3s ease;
+        }
+        .glass-card:hover {
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: var(--glow-accent);
+        }
+
+        .premium-text-logo { font-family: var(--theme-font); font-weight: 900; font-size: 1.6rem; letter-spacing: -1px; color: #ffffff; text-decoration: none; display: flex; align-items: baseline; }
+        .premium-text-logo .dot { color: var(--color-accent); font-size: 2.2rem; line-height: 0; margin-left: 1px;}
+    </style>
+</head>
+<body>
+
+    {{ header_html|safe }}
+
+    <main>
+        {% for block_html in blocks %}
+            <div>
+                {{ block_html|safe }}
+            </div>
+        {% empty %}
+            <div class="container mt-5 text-center" style="padding-top: 150px;">
+                <h2 class="text-white">Добавьте блоки в админке!</h2>
+            </div>
+        {% endfor %}
+    </main>
+
+    {{ footer_html|safe }}
+
+    <div class="modal fade" id="leadModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: var(--theme-radius); background-color: var(--color-main);">
+          <div class="modal-header border-0 pb-0">
+            <h5 class="modal-title fw-bold text-white">{{ ui.form_title }}</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body p-4">
+            <form class="lead-form">
+              <div class="row mb-3">
+                  <div class="col-6">
+                      <label class="form-label text-white opacity-75 small fw-semibold">{{ ui.first_name }}</label>
+                      <input type="text" name="firstName" class="form-control form-control-lg text-white" required style="background-color: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--theme-radius-sm);">
+                  </div>
+                  <div class="col-6">
+                      <label class="form-label text-white opacity-75 small fw-semibold">{{ ui.last_name }}</label>
+                      <input type="text" name="lastName" class="form-control form-control-lg text-white" required style="background-color: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--theme-radius-sm);">
+                  </div>
+              </div>
+              <div class="mb-3">
+                  <label class="form-label text-white opacity-75 small fw-semibold">{{ ui.email }}</label>
+                  <input type="email" name="email" class="form-control form-control-lg text-white" required style="background-color: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--theme-radius-sm);">
+              </div>
+              <div class="mb-4">
+                <label class="form-label text-white opacity-75 small fw-semibold">{{ ui.phone }}</label>
+                <div class="input-group">
+                    <select name="phoneCode" class="form-select text-white" style="max-width: 140px; background-color: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-right: none; border-radius: var(--theme-radius-sm) 0 0 var(--theme-radius-sm); font-size: 0.9rem;">
+                        {% for geo in site_geos %}
+                            <option value="{{ geo.prefix }}" data-length="{{ geo.length }}" class="text-dark">
+                                {{ geo.name }} ({{ geo.prefix }})
+                            </option>
+                        {% endfor %}
+                    </select>
+                    <input type="tel" name="phone" class="form-control form-control-lg text-white" required style="background-color: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 0 var(--theme-radius-sm) var(--theme-radius-sm) 0;">
+                </div>
+              </div>
+              <div class="d-grid mt-4">
+                <button type="submit" class="btn btn-lg fw-bold text-uppercase py-3" style="background-color: var(--color-accent); color: var(--color-main); border-radius: var(--theme-radius-sm); letter-spacing: 1px; font-size: 0.9rem;">
+                  {{ ui.send }}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            AOS.init({ duration: 800, once: true, offset: 50 });
+
+            // Открытие модалки по клику на ссылку с href="#leadForm"
+            document.querySelectorAll('a[href="#leadForm"]').forEach(btn => {
+                btn.removeAttribute('href');
+                btn.setAttribute('data-bs-toggle', 'modal');
+                btn.setAttribute('data-bs-target', '#leadModal');
+                btn.style.cursor = 'pointer';
+            });
+
+            // Отправка формы заявок
+            document.querySelectorAll('.lead-form').forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const btn = form.querySelector('button[type="submit"]');
+                    const originalText = btn.innerText;
+                    btn.innerText = '...';
+                    btn.disabled = true;
+
+                    const phoneCode = form.querySelector('[name="phoneCode"]').value;
+                    const phoneNum = form.querySelector('[name="phone"]').value;
+
+                    const data = {
+                        firstName: form.querySelector('[name="firstName"]').value,
+                        lastName: form.querySelector('[name="lastName"]').value,
+                        email: form.querySelector('[name="email"]').value,
+                        phone: phoneCode + ' ' + phoneNum,
+                        subdomain: '{{ site.subdomain }}'
+                    };
+
+                    fetch('/api/save-lead/', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify(data)
+                    }).then(res => res.json()).then(res => {
+                        if(res.status === 'ok') {
+                            btn.innerText = 'Успешно!';
+                            btn.style.backgroundColor = '#28a745';
+                            btn.style.color = '#fff';
+                            setTimeout(() => {
+                                form.reset();
+                                btn.innerText = originalText;
+                                btn.disabled = false;
+                                btn.style = '';
+                                const modalInstance = bootstrap.Modal.getInstance(document.getElementById('leadModal'));
+                                if (modalInstance) modalInstance.hide();
+                            }, 2000);
+                        } else {
+                            alert('Ошибка отправки');
+                            btn.innerText = originalText;
+                            btn.disabled = false;
+                        }
+                    }).catch(err => {
+                        console.error(err);
+                        btn.innerText = originalText;
+                        btn.disabled = false;
+                    });
+                });
+            });
+
+            // Умная валидация телефона
+            function updatePhoneValidation(selectElement) {
+                const inputElement = selectElement.closest('.input-group').querySelector('input[name="phone"]');
+                const selectedOption = selectElement.options[selectElement.selectedIndex];
+                const maxLength = selectedOption.getAttribute('data-length');
+
+                if (maxLength) {
+                    inputElement.setAttribute('maxlength', maxLength);
+                    inputElement.setAttribute('minlength', maxLength);
+                    inputElement.setAttribute('placeholder', 'X'.repeat(maxLength));
+                }
+                inputElement.value = '';
+            }
+
+            document.querySelectorAll('select[name="phoneCode"]').forEach(select => {
+                select.addEventListener('change', function() {
+                    updatePhoneValidation(this);
+                });
+                updatePhoneValidation(select);
+            });
+
+            document.querySelectorAll('input[name="phone"]').forEach(input => {
+                input.addEventListener('input', function() {
+                    this.value = this.value.replace(/\D/g, '');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

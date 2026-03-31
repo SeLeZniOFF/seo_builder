@@ -1,0 +1,29 @@
+<footer class="py-4 mt-auto" style="background-color: var(--color-main); color: var(--color-accent);">
+  <div class="container text-center">
+    <div class="row align-items-center">
+
+      <div class="col-md-4 text-md-start mb-3 mb-md-0 fw-bold fs-5">
+        {{ site.name }}
+      </div>
+
+      <div class="col-md-4 mb-3 mb-md-0 opacity-75 small">
+        &copy; <script>document.write(new Date().getFullYear())</script> {{ site.name }}. Все права защищены.
+      </div>
+
+      <div class="col-md-4 text-md-end">
+        <ul class="list-inline mb-0">
+          {% for p in site.pages.all %}
+              <li class="list-inline-item mx-2">
+                  {% if p.slug %}
+                      <a href="{% url 'inner_page' subdomain=site.subdomain slug=p.slug %}" class="custom-nav-link text-decoration-none small">{{ p.title }}</a>
+                  {% else %}
+                      <a href="{% url 'home_page' subdomain=site.subdomain %}" class="custom-nav-link text-decoration-none small">{{ p.title }}</a>
+                  {% endif %}
+              </li>
+          {% endfor %}
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</footer>
