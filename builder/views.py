@@ -245,3 +245,16 @@ def robots_txt(request):
         f"Sitemap: {request.scheme}://{request.get_host()}/sitemap.xml"
     ]
     return HttpResponse("\n".join(lines), content_type="text/plain")
+
+
+def thanks_page(request):
+    subdomain = getattr(request, 'subdomain', None)
+
+    # Если зашли на главный домен (без поддомена) — отдаем 403
+    if not subdomain:
+        return HttpResponseForbidden("")
+
+    site = get_object_or_404(Site, subdomain=subdomain)
+
+    # Отдаем универсальный шаблон, но передаем в него данные ТЕКУЩЕГО сайта
+    return render(request, 'thanks.html', {'site': site})
